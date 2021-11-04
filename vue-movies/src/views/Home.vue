@@ -70,13 +70,8 @@ export default {
 
 <style scoped lang="scss">
     .fb {
-        &__main {
-            // padding-left: rem(12px);
-        }
-        
         &__title {
             padding: rem(24px 0);
-            font-family: "SpoqaHanSansNeo";
             @include fontcss($black, 600, rem(28px), 1.2);
         }
     }
