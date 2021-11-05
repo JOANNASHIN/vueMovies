@@ -1,31 +1,84 @@
 <template>
     <div class="fb__list" :class="detailActive == true ? 'detailOpen' : ''">
-        <div class="fb__list__slider swiper-container js__list__slider">
-            <ul class="fb__list__wrapper swiper-wrapper">
-                <li class="fb__list__item swiper-slide" v-for="(list, index) in list" :key="index">
-                    <a href="#" class="fb__list__link">
-                        <figure class="fb__list__thumb" @click="openDetailLayer($event, 'active', list)">
-                            <figcaption class="fb__title--hidden">{{ list.name }}</figcaption>
-                            <img :src="`https://image.tmdb.org/t/p/w500${list.poster_path}`" alt="">
-                        </figure>
+        <template v-if="false === fetches">
+            <div class="fb__skeleton fb__list">
+                <ul class="fb__list__wrapper">
+                    <li class="fb__list__item" v-for="(list, index) in 3" :key="index">
+                        <div class="fb__list__thumb animate"></div>
 
                         <div class="fb__list__summary">
-                            <strong class="fb__list__name">
-                                {{ list.original_name }} <span v-show="list.name != list.original_name">[{{list.name}}]</span>
-                            </strong>
-                            <p class="fb__list__genre">
-                                <span v-for="(genre, index) in list.genre_ids" :key="`genre${index}`">
-                                    {{genre}}
-                                </span>
-                            </p>
-                            <span class="fb__list__basic">국가, 년도 / 몇분짜리 / PG-18</span>
-                        </div>
-                    </a>
-                </li>
-            </ul>
-        </div>
+                            <!-- 프로그램명 -->
+                            <strong class="fb__list__name animate"></strong>
 
-        <detail-layer :detail="detail" :detailActive="detailActive" @closeDetailLayer="closeDetailLayer($event)"></detail-layer>
+                            <!-- 장르 -->
+                            <p class="fb__list__genre animate"></p>
+
+                            <!-- 요약 -->
+                            <p class="fb__list__text animate"></p>
+                            <p class="fb__list__text animate"></p>
+                        </div>
+                    </li>
+                </ul>
+            </div>
+        </template>
+
+        <template v-else-if="true === fetches">
+            <div ref="listSlider" class="fb__list__slider swiper-container">
+                <ul class="fb__list__wrapper swiper-wrapper">
+                    <template v-if="listData && listData.length">
+                        <li class="fb__list__item swiper-slide" v-for="(list, index) in listData" :key="index">
+                            <figure class="fb__list__thumb" @click="openDetailLayer($event, list)">
+                                <img :src="`https://image.tmdb.org/t/p/w500${list.poster_path}`" alt="">
+                            </figure>
+
+                            <div class="fb__list__summary">
+                                <!-- 프로그램명 -->
+                                <strong class="fb__list__name">
+                                    {{ list.original_name }} <span v-show="list.name != list.original_name">[{{list.name}}]</span>
+                                </strong>
+
+                                <!-- 장르 -->
+                                <p class="fb__list__genre">
+                                    <span v-for="(id, index) in list.genre_ids" :key="`genre${index}`">
+                                        {{genreName(id)}}
+                                        <template v-if="index != list.genre_ids.length - 1">,&nbsp;</template>
+                                    </span>
+                                </p>
+
+                                <!-- 기본정보 -->
+                                <span class="fb__list__basic">
+                                    <!-- 국가 -->
+                                    <span v-for="(country, index) in list.origin_country" :key="`country${index}`">
+                                        {{country}}&nbsp;&nbsp;|&nbsp;
+                                    </span>
+
+                                    <!-- 날짜 -->
+                                    <span>{{list.first_air_date}}</span>
+                                </span>
+
+                                <!-- 요약 -->
+                                <p class="fb__list__text">{{list.overview}}</p>
+                            </div>
+                        </li>
+                    </template>
+                    <template v-else>
+                        <li class="fb__list__empty">
+                            찾으시는 것이 없나요 ?<br />
+                            띄어쓰기도 구분하니 참고 부탁드려요.<br />
+                            다른단어로도 검색해보세요 !
+                        </li>
+                    </template>
+                </ul>
+            </div>
+        </template>
+
+        <template v-else-if="'error' === fetches">
+            <p class="fb__error">
+                오류가 발생하였습니다.<br>
+                잠시 후 다시 시도해주세요.
+            </p>
+        </template>
+        <detail-layer :detailId="detail.id" :detail="detail" :detailActive="detailActive" @closeDetailLayer="closeDetailLayer($event)"></detail-layer>
     </div>
 </template>
 
@@ -39,41 +92,155 @@ export default {
         DetailLayer
     },
     props: {
-        list: {
+        listData: {
             default: [],
             type: Array
+        },
+        
+        fetches: {
+            default: false,
+            type: Boolean
         }
     },
 
     data() {  
         return {
             detailActive: false,
-            detail: {}
+            detail: {},
+            genres: []
         }
     },
 
-    mounted() {
-        this.listSlider();
+    created() {
+        this.requestGenreName();
+    },
+
+    watch: {
+        fetches(status) {   
+            if (true === status) {
+                this.$nextTick(() => {
+                    this.listSlider();
+                })
+            }
+        }
     },
 
     methods: {
         listSlider() {
-            new Swiper(".js__list__slider", {
+            new Swiper(this.$refs.listSlider, {
                 loop: false,
                 slidesPerView: "auto"
             })
         },
 
-        openDetailLayer(e, type, data) {
-            if (type == "active") this.detailActive = true;
-            this.detail = data;   
+        async requestTvDetail(list) {
+            try {
+                const response = await this.$store.dispatch("network/request", {
+                    method: "get",
+                    url: `/tv/${list.id}`,
+                })
+    
+                if (response) {
+                    this.detail = response;
+                    this.detail.mainPosterPath = list.poster_path;
+                    this.detail.koreanOverview = list.overview;
+
+                    this.getImages();
+                    this.getTrailerVideos();
+                }
+            }
+
+            catch(error) {
+                console.error("requestGenreName has exception..", error)
+            }
+        },
+
+        async getImages(id) {
+            try {
+                const response = await this.$store.dispatch("network/request", {
+                    method: "get",
+                    url: `/tv/${this.detail.id}/videos`,
+                    data: {}
+                })
+
+                if (response) {
+                    console.log(response.results);
+                    Object.assign(this.detail, {
+                        trailerVideos: response.results
+                    });
+
+
+                    console.log(this.detail);
+                }
+
+                this.detailActive = true;
+            }
+
+            catch(ex) {
+                console.error(ex);
+            }
+        },
+
+        async getTrailerVideos() {
+            try {
+                const response = await this.$store.dispatch("network/request", {
+                    method: "get",
+                    url: `/tv/${this.detail.id}/videos`,
+                    data: {}
+                })
+
+                if (response) {
+                    console.log(response.results);
+                    Object.assign(this.detail, {
+                        trailerVideos: response.results
+                    });
+
+
+                    console.log(this.detail);
+                }
+
+                this.detailActive = true;
+            }
+
+            catch(ex) {
+                console.error(ex);
+            }
+        },
+
+        openDetailLayer(e, data) {
+            this.requestTvDetail(data);
         },
 
         closeDetailLayer() {
             this.detailActive = false;
             this.detail = {};
-        }
-    }
+        },
+
+        async requestGenreName() {
+            try {
+                const response = await this.$store.dispatch("network/request", {
+                    method: "get",
+                    url: "/genre/tv/list",
+                })
+    
+                if (response) this.genres = response.genres;
+            }
+            catch(error) {
+                console.error("requestGenreName has exception..", error)
+            }
+        },
+        
+        genreName(id) {
+            const target = this.genres.find(v => {
+                if (v.id == id) return v;
+            })
+
+            return target["name"];
+        },
+
+        
+    },
+
 }
 </script>
 
@@ -96,9 +263,18 @@ export default {
                 }
             }
 
+            &__wrapper {
+                white-space: nowrap;
+            }
+
             &__item {
+                display: inline-block;
                 width: rem(300px);
                 margin-left: rem(20px);
+
+                &:last-child {
+                    margin-right: rem(20px);
+                }
                 // width: 100%;
                 // transform: scale(0.88);
                 
@@ -114,6 +290,22 @@ export default {
                         height: rem(450px);
 
                     }
+                }
+            }
+
+            &__empty {
+                width: 100%;
+                padding: rem(80px 0);
+                @include fontcss($white, 200, rem(16px), 1.5);
+                text-align: center;
+
+                &:before {
+                    content: "";
+                    display: block;
+                    width: rem(40px);
+                    height: rem(40px);
+                    margin: 0 auto rem(12px);
+                    background: url("/assets/images/guide/ico-header-search-wh.svg") no-repeat center center / 100% auto;
                 }
             }
 
@@ -140,13 +332,14 @@ export default {
                 display: none;
                 padding: rem(0 12px);
                 margin-top: rem(30px);
+                white-space: normal;
             }
 
             &__name {
                 display: block;
                 margin-bottom: rem(8px);
                 word-break: break-all;
-                @include fontcss($black, bold, rem(18px), 1.2);
+                @include fontcss($bright, bold, rem(18px), 1.2);
                 @include line(1);
             }
 
@@ -154,8 +347,22 @@ export default {
             &__basic {
                 display: block;
                 margin-bottom: rem(8px);
-                @include fontcss($medium, 200, rem(14px), 1.2);
-                @include line(1);
+                font-size: 0;
+
+                span {
+                    @include fontcss($medium, 200, rem(14px), 1.2);
+                }
+            }
+
+            &__text {
+                @include fontcss($medium, 200, rem(14px), 1.4);
+                @include line(2);
+            }
+
+            &__overview {
+                display: block;
+                margin-top: rem(12px);
+                @include fontcss($medium, 200, rem(14px), 1.4);
             }
         }
     }
