@@ -1,4 +1,5 @@
 import axios from "axios";
+import eventBus from "../utils/bus";
 
 const network = {
     namespaced: "network",
@@ -43,11 +44,13 @@ const network = {
             let parameter = "";
 
             try {
+                eventBus.$emit("start:spinner");
+
                 if('get' === method) parameter = await dispatch('makeGetParameter', data);
 
                 const requestParameters = {
                     method: method,
-                    url: `${state.baseUrl}${url}?api_key=${state.apiKey}${parameter}`,
+                    url: `${state.baseUrl}${url}?api_key=${state.apiKey}${parameter}&language=ko-KR|en-US`,
                     headers: header ? Object.assign(await dispatch("createHeader"), header) : await dispatch("createHeader"),
                     data: data ? await dispatch("convertFormData", data) : null,
                 }
@@ -63,7 +66,9 @@ const network = {
             }
 
             finally {
-                // commit("deleteRequest", requestInfo)
+                setTimeout(() => {
+                    eventBus.$emit("end:spinner");
+                }, 200)
             }
         },
     },
