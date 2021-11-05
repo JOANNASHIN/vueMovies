@@ -1,7 +1,7 @@
 <template>
     <header class="fb__header">
         <!-- <router-link to="/">Home</router-link> -->
-
+<!-- 
         <nav id="nav" class="fb__nav">
             <ul class="fb__nav__wrapper">
                 <li class="fb__nav__menu" v-for="(menu, index) in menus" :key="index" :class="$route.params.id == menu.id ? 'active' : ''">
@@ -10,16 +10,26 @@
                     </router-link>
                 </li>
             </ul>
-        </nav>
+        </nav> -->
+
+        <form action="" class="fb__search" @submit.prevent="searchInit($event)">
+            <fieldset class="fb__search__wrapper">
+                <legend>검색하기</legend>
+                <input type="search" class="fb__search__input" placeholder="Search" v-model.trim="searchWord" @keyup.stop="searchInit($event)">
+                <button type="submit" class="fb__search__button">Search</button>
+            </fieldset>
+        </form>
     </header>
 </template>
 
 <script>
+import eventBus from "../utils/bus";
 export default {
     name: "Header",
     data() {
         return {
-            menus: []
+            menus: [],
+            searchWord: ""
         }
     },
     created() {
@@ -32,9 +42,6 @@ export default {
                 const response = await this.$store.dispatch("network/request", {
                     method: "get",
                     url: "/genre/movie/list",
-                    data: {
-                        language: "en-US"
-                    }
                 })
 
                 if (response) this.menus = response.genres;
@@ -43,34 +50,12 @@ export default {
             catch(ex) {
                 console.error(ex);
             }
+        },
+
+        searchInit() {
+            if (!this.searchWord) return ;
+            eventBus.$emit("search:tv", this.searchWord);
         }
     }
 }
 </script>
-
-<style lang="scss">
-    .fb {
-        &__header {
-        }
-
-        &__nav {
-            &__wrapper {
-                width: 100%;
-                @extend %scroll;
-            }
-
-            &__menu {
-                display: inline-block;
-                margin-right: rem(10px);
-                @include fontcss($medium, 200, rem(20px), 1.5);
-
-                &.active {
-                    color: $black;
-                    font-weight: bold;
-                }
-            }
-        }
-
-
-    }
-</style>

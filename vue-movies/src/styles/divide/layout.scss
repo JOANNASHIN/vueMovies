@@ -1,3 +1,130 @@
 .fb {
-    background: $bright;
+    background: $black;
+    
+    &__header {
+        padding-top: rem(32px);
+    }
+    
+    &__layout {
+        padding-bottom: rem(32px);
+    }
+
+    &__title {
+        padding: rem(24px 20px);
+        @include fontcss($bright, bold, rem(24px), 1.2);
+    }
+
+    &__search {
+        display: flex;
+        flex-wrap: nowrap;
+        position: relative;
+        width: rem(240px);
+        height: rem(32px);
+        // margin: 0 auto;
+        margin: 0 rem(20px);
+        background: $bright;
+        border-radius: rem(20px);
+        font-size: 0;
+
+        &__wrapper {
+            display: flex;
+            flex-wrap: nowrap;
+            align-items: center;
+            justify-content: space-between;
+            width: 100%;
+        }
+
+        &__input {
+            background: none !important;
+            border: none !important;
+            padding: {
+                top: rem(12px) !important;
+                right: 0 !important;
+                bottom: rem(12px) !important;
+            }
+        }
+
+        &__button {
+            flex: 0 0 rem(50px);
+            height: 100%;
+            background: url("/assets/images/guide/ico-header-search.svg") no-repeat center center / rem(24px 24px);
+            font-size: 0;
+        }
+    }
+
+    &__nav {
+        &__wrapper {
+            width: 100%;
+            @extend %scroll;
+        }
+
+        &__menu {
+            display: inline-block;
+            margin-right: rem(10px);
+            @include fontcss($medium, 200, rem(14px), 1.5);
+
+            &.active {
+                color: $black;
+                font-weight: bold;
+            }
+        }
+    }
+
+    &__error {
+        width: 100%;
+        padding: rem(80px 0);
+        @include fontcss($white, 200, rem(16px), 1.5);
+        text-align: center;
+    }
+
+    &__skeleton {
+        .animate {
+            animation: shimmer 10s infinite linear;
+            background: linear-gradient(to right, $bright 4%, #eee 25%, $bright 36%);
+        }
+        
+        @keyframes shimmer {
+            0% {
+            background-position: -1000px 0;
+            }
+            100% {
+            background-position: 1000px 0;
+            }
+        }
+
+        .fb {
+            &__list {
+                &__wrapper {
+                    overflow-x: auto;
+
+                    &::-webkit-scrollbar {
+                        display: none;
+                    }
+                }
+
+                &__summary {
+                    display: block;
+                }
+    
+                &__name {
+                    display: block;
+                    width: rem(100px);
+                    height: rem(24px);
+                    margin-bottom: rem(20px);
+                }
+    
+                &__genre {
+                    display: block;
+                    height: rem(18px);
+                    margin-bottom: rem(16px);
+                }
+    
+                &__text {
+                    display: block;
+                    height: rem(12px);
+                    margin-bottom: rem(8px);
+                }
+            }
+        }
+    }
 }

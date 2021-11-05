@@ -165,7 +165,7 @@ input {
     outline: none;
     border: 0;
 	vertical-align: middle;
-
+    
     &::-ms-clear {
         display: none;
     }
@@ -175,7 +175,7 @@ input {
     }
 }
 
-%defaultInputStyle {
+@mixin defaultInputStyle() {
     width: 100%;
     padding: rem(16px 52px 16px 16px);
     border: 1px solid $light;
@@ -201,15 +201,15 @@ input {
 }
 
 input[type='text'] {
-    @extend %defaultInputStyle;
+    @include defaultInputStyle;
 }
 
 input[type='tel'] {
-    @extend %defaultInputStyle;
+    @include defaultInputStyle;
 }
 
 input[type='search'] {
-    @extend %defaultInputStyle;
+    @include defaultInputStyle;
 
     &::-webkit-search-cancel-button {
         display: none;
@@ -218,11 +218,11 @@ input[type='search'] {
 }
 
 input[type='password'] {
-    @extend %defaultInputStyle;
+    @include defaultInputStyle;
 }
 
 input[type='number'] {
-    @extend %defaultInputStyle;
+    @include defaultInputStyle;
 
     &::-webkit-outer-spin-button,
     &::-webkit-inner-spin-button {

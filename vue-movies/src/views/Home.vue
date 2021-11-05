@@ -1,11 +1,12 @@
 <template>
     <section class="fb__main">
-        <h2 class="fb__title">NOW NETFLEX</h2>
-        <list-component :list="tvList"></list-component>
+        <h2 class="fb__main__title fb__title">NOW NETFLEX</h2>
+        <list-component :listData="tvList" :fetches="fetches.list"></list-component>
     </section>
 </template>
 
 <script>
+import eventBus from "../utils/bus";
 import ListComponent from "../components/ListComponent";
 
 export default {
@@ -16,6 +17,9 @@ export default {
     
     data() {
         return {
+            fetches: {
+                list: false,
+            },
             movieList: [],
             tvList: [],
         }
@@ -24,6 +28,7 @@ export default {
     created() {
         this.requestMovieList();
         this.requestTvList();
+        eventBus.$on("search:tv", this.searchInit);
     },
 
     methods: {
@@ -38,10 +43,12 @@ export default {
                 })
 
                 if (response) this.movieList = response.results;
+                this.fetches.list = true;
             }
 
             catch(ex) {
                 console.error(ex);
+                this.fetches.list = 'error';
             }
         },
 
@@ -51,7 +58,6 @@ export default {
                     method: "get",
                     url: "/discover/tv",
                     data: {
-                        language: "ko-KR|en-US",
                         with_ott_providers: 8,
                         ott_region: "KR"
                     }
@@ -63,17 +69,31 @@ export default {
             catch(ex) {
                 console.error(ex);
             }
+        },
+        
+        async requestSearchTvList(keyword) {
+            try {
+                const response = await this.$store.dispatch("network/request", {
+                    method: "get",
+                    url: "/search/tv",
+                    data: {
+                        with_ott_providers: 8,
+                        ott_region: "KR",
+                        query: keyword
+                    }
+                })
+
+                if (response) this.tvList = response.results;
+            }
+
+            catch(ex) {
+                console.error(ex);
+            }
+        },
+
+        searchInit(keyword) {
+            this.requestSearchTvList(keyword);
         }
     }
 };
 </script>
-
-<style scoped lang="scss">
-    .fb {
-        &__title {
-            padding: rem(24px 0);
-            @include fontcss($black, 600, rem(28px), 1.2);
-        }
-    }
-
-</style>
