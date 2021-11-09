@@ -107,7 +107,8 @@ export default {
         return {
             detailActive: false,
             detail: {},
-            genres: []
+            genres: [],
+            targetId: null
         }
     },
 
@@ -122,7 +123,15 @@ export default {
                     this.listSlider();
                 })
             }
-        }
+        },
+
+        // detailActive(open) {
+        //     setTimeout(() => {
+        //         if (false === open) {
+        //             this.$refs.detailLayer.classList.remove("active")
+        //         }
+        //     }, 10)
+        // }
     },
 
     methods: {
@@ -133,82 +142,166 @@ export default {
             })
         },
 
-        async requestTvDetail(list) {
-            try {
-                const response = await this.$store.dispatch("network/request", {
-                    method: "get",
-                    url: `/tv/${list.id}`,
-                })
+        // async requestTvDetail(list) {
+        //     try {
+        //         const response = await this.$store.dispatch("network/request", {
+        //             method: "get",
+        //             url: `/tv/${list.id}`,
+        //         })
     
-                if (response) {
-                    this.detail = response;
-                    this.detail.mainPosterPath = list.poster_path;
-                    this.detail.koreanOverview = list.overview;
+        //         if (response) {
+        //             this.detail = response;
+        //             this.detail.mainPosterPath = list.poster_path;
+        //             this.detail.koreanOverview = list.overview;
+        //         }
+        //     }
 
-                    this.getImages();
-                    this.getTrailerVideos();
+        //     catch(error) {
+        //         console.error("requestGenreName has exception..", error)
+        //     }
+        // },
+
+        // async getTvCredits() {
+        //     try {
+        //         const response = await this.$store.dispatch("network/request", {
+        //             method: "get",
+        //             url: `/tv/${this.targetId}/credits`,
+        //         })
+                
+        //         if (response) {
+        //             Object.assign(this.detail, {
+        //                 cast: response.cast
+        //             });
+        //         }
+        //     }
+
+        //     catch(ex) {
+        //         console.error(ex);
+        //     }
+        // },
+
+        // async getTvImages() {
+        //     try {
+        //         const response = await this.$store.dispatch("network/request", {
+        //             method: "get",
+        //             url: `/tv/${this.targetId}/images`,
+        //             data: {}
+        //         })
+
+        //         if (response) {
+        //             Object.assign(this.detail, {
+        //                 images: response.results
+        //             });
+        //         }
+        //     }
+
+        //     catch(ex) {
+        //         console.error(ex);
+        //     }
+        // },
+
+        // async getTvTrailerVideos() {
+        //     try {
+        //         const response = await this.$store.dispatch("network/request", {
+        //             method: "get",
+        //             url: `/tv/${this.targetId}/videos`,
+        //             data: {}
+        //         })
+
+        //         if (response) {
+        //             console.log(response.results);
+        //             Object.assign(this.detail, {
+        //                 trailerVideos: response.results
+        //             });
+        //         }
+
+        //         this.detailActive = true;
+        //     }
+
+        //     catch(ex) {
+        //         console.error(ex);
+        //     }
+        // },
+
+        requestTvDetail(list) {
+            return new Promise( async(res, rej) => {
+                try {
+                    const response = await this.$store.dispatch("network/request", {
+                        method: "get",
+                        url: `/tv/${list.id}`,
+                    })
+        
+                    res(response);
                 }
-            }
-
-            catch(error) {
-                console.error("requestGenreName has exception..", error)
-            }
+    
+                catch(error) {
+                    console.error("requestGenreName has exception..", error)
+                    rej(error)
+                }
+            });
         },
 
-        async getImages(id) {
-            try {
-                const response = await this.$store.dispatch("network/request", {
-                    method: "get",
-                    url: `/tv/${this.detail.id}/videos`,
-                    data: {}
-                })
-
-                if (response) {
-                    console.log(response.results);
-                    Object.assign(this.detail, {
-                        trailerVideos: response.results
-                    });
-
-
-                    console.log(this.detail);
+        getTvCredits() {
+            return new Promise( async(res, rej) => {
+                try {
+                    const response = await this.$store.dispatch("network/request", {
+                        method: "get",
+                        url: `/tv/${this.targetId}/credits`,
+                    })
+                    
+                    res(response);
                 }
 
-                this.detailActive = true;
-            }
-
-            catch(ex) {
-                console.error(ex);
-            }
+                catch(ex) {
+                    console.error(ex);
+                    rej(error)
+                }
+            });
         },
 
-        async getTrailerVideos() {
-            try {
-                const response = await this.$store.dispatch("network/request", {
-                    method: "get",
-                    url: `/tv/${this.detail.id}/videos`,
-                    data: {}
-                })
+        getTvTrailerVideos() {
+            return new Promise( async(res, rej) => {
+                try {
+                    const response = await this.$store.dispatch("network/request", {
+                        method: "get",
+                        url: `/tv/${this.targetId}/videos`,
+                        data: {}
+                    })
 
-                if (response) {
-                    console.log(response.results);
-                    Object.assign(this.detail, {
-                        trailerVideos: response.results
-                    });
-
-
-                    console.log(this.detail);
+                    res(response);
                 }
 
-                this.detailActive = true;
-            }
-
-            catch(ex) {
-                console.error(ex);
-            }
+                catch(ex) {
+                    console.error(ex);
+                    rej(error)
+                }
+            });
         },
 
-        openDetailLayer(e, data) {
-            this.requestTvDetail(data);
+        async openDetailLayer(e, data) {
+            this.targetId = data.id;
+            
+            const detailData = await this.requestTvDetail(data);
+            const videosData = await this.getTvTrailerVideos();
+            const creditData = await this.getTvCredits();
+
+            this.detail = detailData;
+            this.detail.mainPosterPath = data.poster_path;
+            this.detail.koreanOverview = data.overview;
+
+            if (videosData) {
+                Object.assign(this.detail, {
+                    trailerVideos: videosData.results
+                });
+            }
+
+            if (creditData) {
+                  Object.assign(this.detail, {
+                    cast: creditData.cast
+                });
+            }
+            
+            this.detailActive = true;
         },
 
         closeDetailLayer() {
@@ -235,7 +328,7 @@ export default {
                 if (v.id == id) return v;
             })
 
-            return target["name"];
+            return target ? target["name"] : "";
         },
 
         
@@ -362,7 +455,11 @@ export default {
             &__overview {
                 display: block;
                 margin-top: rem(12px);
-                @include fontcss($medium, 200, rem(14px), 1.4);
+                @include fontcss($medium, 200, rem(13px), 1.4);
+
+                &--korean {
+                    font-size: rem(12px);
+                }
             }
         }
     }
