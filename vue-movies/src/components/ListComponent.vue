@@ -78,6 +78,7 @@
                 잠시 후 다시 시도해주세요.
             </p>
         </template>
+        
         <detail-layer :detailId="detail.id" :detail="detail" :detailActive="detailActive" @closeDetailLayer="closeDetailLayer($event)"></detail-layer>
     </div>
 </template>
@@ -124,14 +125,6 @@ export default {
                 })
             }
         },
-
-        // detailActive(open) {
-        //     setTimeout(() => {
-        //         if (false === open) {
-        //             this.$refs.detailLayer.classList.remove("active")
-        //         }
-        //     }, 10)
-        // }
     },
 
     methods: {
@@ -141,87 +134,6 @@ export default {
                 slidesPerView: "auto"
             })
         },
-
-        // async requestTvDetail(list) {
-        //     try {
-        //         const response = await this.$store.dispatch("network/request", {
-        //             method: "get",
-        //             url: `/tv/${list.id}`,
-        //         })
-    
-        //         if (response) {
-        //             this.detail = response;
-        //             this.detail.mainPosterPath = list.poster_path;
-        //             this.detail.koreanOverview = list.overview;
-        //         }
-        //     }
-
-        //     catch(error) {
-        //         console.error("requestGenreName has exception..", error)
-        //     }
-        // },
-
-        // async getTvCredits() {
-        //     try {
-        //         const response = await this.$store.dispatch("network/request", {
-        //             method: "get",
-        //             url: `/tv/${this.targetId}/credits`,
-        //         })
-                
-        //         if (response) {
-        //             Object.assign(this.detail, {
-        //                 cast: response.cast
-        //             });
-        //         }
-        //     }
-
-        //     catch(ex) {
-        //         console.error(ex);
-        //     }
-        // },
-
-        // async getTvImages() {
-        //     try {
-        //         const response = await this.$store.dispatch("network/request", {
-        //             method: "get",
-        //             url: `/tv/${this.targetId}/images`,
-        //             data: {}
-        //         })
-
-        //         if (response) {
-        //             Object.assign(this.detail, {
-        //                 images: response.results
-        //             });
-        //         }
-        //     }
-
-        //     catch(ex) {
-        //         console.error(ex);
-        //     }
-        // },
-
-        // async getTvTrailerVideos() {
-        //     try {
-        //         const response = await this.$store.dispatch("network/request", {
-        //             method: "get",
-        //             url: `/tv/${this.targetId}/videos`,
-        //             data: {}
-        //         })
-
-        //         if (response) {
-        //             console.log(response.results);
-        //             Object.assign(this.detail, {
-        //                 trailerVideos: response.results
-        //             });
-        //         }
-
-        //         this.detailActive = true;
-        //     }
-
-        //     catch(ex) {
-        //         console.error(ex);
-        //     }
-        // },
 
         requestTvDetail(list) {
             return new Promise( async(res, rej) => {
@@ -285,23 +197,32 @@ export default {
             const videosData = await this.getTvTrailerVideos();
             const creditData = await this.getTvCredits();
 
+            //기본 상세 정보
             this.detail = detailData;
-            this.detail.mainPosterPath = data.poster_path;
-            this.detail.koreanOverview = data.overview;
 
+            //리스트에서 넘길 데이터
+            Object.assign(this.detail, {
+                mainPosterPath: data.poster_path,
+                koreanOverview: data.overview,
+            });
+
+            //트레일러 영상
             if (videosData) {
                 Object.assign(this.detail, {
                     trailerVideos: videosData.results
                 });
             }
 
+            //출연진
             if (creditData) {
                   Object.assign(this.detail, {
                     cast: creditData.cast
                 });
             }
             
-            this.detailActive = true;
+            this.$nextTick(() => {
+                this.detailActive = true;
+            })
         },
 
         closeDetailLayer() {
@@ -336,131 +257,3 @@ export default {
 
 }
 </script>
-
-<style lang="scss">
-    .fb {
-        &__list {
-            display: block;
-            overflow: hidden;
-            position: relative;
-
-            &.detailOpen {
-                .swiper-slide-active {
-                    .fb__list__summary {
-                        display: none !important;
-                    }
-
-                    .fb__list__thumb { 
-                        display: none;
-                    }
-                }
-            }
-
-            &__wrapper {
-                white-space: nowrap;
-            }
-
-            &__item {
-                display: inline-block;
-                width: rem(300px);
-                margin-left: rem(20px);
-
-                &:last-child {
-                    margin-right: rem(20px);
-                }
-                // width: 100%;
-                // transform: scale(0.88);
-                
-                &.swiper-slide-active {
-                    // transform: scale(1);
-                    transition: all 0.6s ease-in;
-
-                    .fb__list__summary {
-                        display: block;
-                    }
-
-                    img {
-                        height: rem(450px);
-
-                    }
-                }
-            }
-
-            &__empty {
-                width: 100%;
-                padding: rem(80px 0);
-                @include fontcss($white, 200, rem(16px), 1.5);
-                text-align: center;
-
-                &:before {
-                    content: "";
-                    display: block;
-                    width: rem(40px);
-                    height: rem(40px);
-                    margin: 0 auto rem(12px);
-                    background: url("/assets/images/guide/ico-header-search-wh.svg") no-repeat center center / 100% auto;
-                }
-            }
-
-            &__thumb {
-                display: flex;
-                align-items: center;
-                width: 100%;
-                height: rem(450px);
-                border-radius: rem(20px);
-                font-size: 0;
-
-                img {
-                    width: 100%;
-                    height: rem(380px);
-                    border-radius: rem(20px);
-                    box-shadow: rem(8px 20px 20px) rgba(0, 0, 0, 0.3);
-
-                        transition: all 0.25s ease-in-out;
-
-                }
-            }
-
-            &__summary {
-                display: none;
-                padding: rem(0 12px);
-                margin-top: rem(30px);
-                white-space: normal;
-            }
-
-            &__name {
-                display: block;
-                margin-bottom: rem(8px);
-                word-break: break-all;
-                @include fontcss($bright, bold, rem(18px), 1.2);
-                @include line(1);
-            }
-
-            &__genre,
-            &__basic {
-                display: block;
-                margin-bottom: rem(8px);
-                font-size: 0;
-
-                span {
-                    @include fontcss($medium, 200, rem(14px), 1.2);
-                }
-            }
-
-            &__text {
-                @include fontcss($medium, 200, rem(14px), 1.4);
-                @include line(2);
-            }
-
-            &__overview {
-                display: block;
-                margin-top: rem(12px);
-                @include fontcss($medium, 200, rem(13px), 1.4);
-
-                &--korean {
-                    font-size: rem(12px);
-                }
-            }
-        }
-    }
-</style>
