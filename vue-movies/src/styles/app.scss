@@ -72,6 +72,7 @@ $green: #3ab505;
 
 //POINT
 $pcolor: #0489ff;
+$filterPoint: rgba(70, 0, 0, 0.96);
 
 //FONT 국문
 $font_noto: "SpoqaHanSansNeo", "Notosans", sans-serif;
@@ -287,4 +288,9 @@ $font_n: $font_noto;
 @import "./divide/reset";
 @import "./divide/common";
 @import "./divide/layout";
+
+// page scss
+@import "./divide/list";
+@import "./divide/detail";
+@import "./divide/filter";
 

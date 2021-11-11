@@ -1,0 +1,182 @@
+.fb {
+    &__filter {
+        position: fixed;
+        top: 0;
+        left: 0;
+        z-index: 10;
+        width: 100%;
+        transform: translate(0, -100%);
+        transition: all 0.9s ease-in-out;
+
+        &.active {
+            transform: translate(0, 0);
+
+            .fb__filter__close {
+                background: $filterPoint url("/assets/images/guide/ico-delete-white.svg") no-repeat center center / rem(10px 10px);
+            }
+        }
+
+        &__wrapper {
+            position: relative;
+            font-size: 0;
+        }
+
+        &__bg {
+            overflow-y: auto; 
+            width: 100%;
+            max-height: 80vh;
+            border: {
+                bottom-left-radius: rem(30px);
+                bottom-right-radius: rem(30px);
+            };
+            background: $filterPoint;
+            box-shadow: rem(0 0 2px 2px) rgba(0, 0, 0, 0.9);
+            padding: rem(8px 20px);
+            color: $white;
+            font-size: rem(14px);
+        }
+
+        &__close {
+            position: absolute;
+            bottom: rem(-52px);
+            right: rem(24px);
+            z-index: 1;
+            width: rem(32px);
+            height: rem(32px);
+            background: rgba(70, 0, 0, 1) url("/assets/images/common/ico_search_filter.png") no-repeat center center / rem(auto 24px);
+            border-radius: 50%;
+            box-shadow: rem(0 0 2px 2px) rgba(0, 0, 0, 0.9);
+        }
+
+        &__top {
+            position: relative;
+            padding: rem(20px 0);
+        }
+
+        &__nav {
+            position: absolute;
+            top: rem(14px);
+            right: rem(4px);
+        }
+
+        &__apply {
+            box-shadow: rem(0 0 3px) $medium;
+            padding-left: rem(10px);
+            background: $bright;
+            border-radius: rem(10px);
+            @include fontcss($filterPoint, 600, rem(10px), 1.2);
+
+            span {
+                display: inline-block;
+                vertical-align: middle;
+            }
+            
+            &:after {
+                content: "";
+                display: inline-block;
+                width: rem(32px);
+                height: rem(32px);
+                border-radius: 50%;
+                background: url("/assets/images/common/icon-checkbox-filter.svg") no-repeat center center / rem(auto 14px);
+                vertical-align: middle;
+            }
+        }
+
+        &__title {
+            display: block;
+            @include fontcss($bright, 200, rem(14px), 1.2);
+            text-align: center;
+        }
+
+        &__list {
+            margin: rem(0 0 24px );
+        }
+
+        &__genre {
+            .fb__filter__flex {
+                display: flex;
+                flex-wrap: wrap;
+
+                label {
+                    flex: 0 0 50%;
+                    margin: rem(0 0 12px);
+                }
+
+                input {
+                    display: none;
+    
+                    &:checked + span {
+                        box-shadow: rem(0 0 3px) $bright;
+                        // border: 1px solid $white;
+                        background: none;
+                        color: $white;
+                        font-weight: 400;
+                    }
+                }
+
+                span {
+                    padding: rem(5px 10px);
+                    border: none;
+                }
+            }
+        }
+
+        &__name {
+            @include fontcss($bright, 400, rem(13px), rem(24px));
+        }
+
+        &__box {
+            padding-top: rem(12px);
+        }
+
+        &__flex {
+            display: flex;
+            flex-wrap: wrap;
+                
+            label {
+                display: inline-block;
+                margin: rem(0 10px 10px 0);
+            }
+
+            input {
+                display: none;
+
+                &:checked + span {
+                    background: $white;
+                    color: $filterPoint;
+                }
+            }
+            
+            span {
+                display: inline-block;
+                padding: rem(12px 12px);
+                // border: rem(2px) solid $white;
+                border-radius: rem(20px);
+                @include fontcss($medium, 400, rem(14px), 1.2);
+            }
+        }
+
+        
+        &__bottom {
+            display: flex;
+            justify-content: center;
+            margin: rem(32px -4px 8px);
+
+            button {
+                margin: rem(0 4px);
+                // padding: rem(10px 0);
+                // border-radius: rem(20px);
+            }
+        }
+
+        &__reset {
+            width: rem(40px);
+            height: rem(40px);
+            // border: rem(2px) solid $white;
+            box-shadow: rem(0 0 3px) $bright;
+            border-radius: 50%;
+            background: rgba(70, 0, 0, 1) url("/assets/images/common/icon-checkbox.svg") no-repeat center center / rem(auto 18px);
+            font-size: 0;
+        }
+    }
+}
