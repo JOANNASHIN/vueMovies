@@ -1,24 +1,30 @@
 <template>
     <div id="app">
-        <header-component></header-component>
-
         <div class="fb__layout">
-            <router-view />
-        </div>
+            <header-component></header-component>
 
-        <spinner :loading="loadingStatus"></spinner>
+            <div class="fb__content">
+                <router-view />
+            </div>
+
+            <spinner :loading="loadingStatus"></spinner>
+
+            <footer-component></footer-component>
+        </div>
     </div>
 </template>
 
 <script>
 import eventBus from './utils/bus'
 import HeaderComponent from "./components/HeaderComponent.vue";
+import FooterComponent from "./components/FooterComponent.vue";
 import Spinner from "./components/Spinner.vue";
 import mixin from "./mixins/mixin";
 
 export default {
     components: {
         HeaderComponent,
+        FooterComponent,
         Spinner
     },
 
@@ -55,6 +61,3 @@ export default {
     }
 }
 </script>
-
-<style>
-</style>

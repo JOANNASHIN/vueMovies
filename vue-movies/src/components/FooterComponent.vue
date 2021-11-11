@@ -1,19 +1,18 @@
 <template>
-    <div>
-        detail
-    </div>
+    <footer class="fb__footer">
+    </footer>
 </template>
 
 <script>
+import eventBus from "../utils/bus";
 export default {
     data() {
         return {
-
         }
     },
 
-    created() {
-        console.log(this.$route.params.id)
+    methods: {
+        
     }
 }
 </script>
