@@ -1,0 +1,128 @@
+.fb {
+    &__list {
+        display: block;
+        overflow: hidden;
+        position: relative;
+        margin: rem(0 -20px);
+        padding-top: rem(24px);
+
+        &.detailOpen {
+            .swiper-slide-active {
+                .fb__list__summary {
+                    display: none !important;
+                }
+
+                .fb__list__thumb { 
+                    display: none;
+                }
+            }
+        }
+
+        $thumbWidth: rem(280px);
+        $thumbHeight: rem(350px); //380
+        $activeHeight: rem(420px);  //450
+        
+        &__wrapper {
+            white-space: nowrap;
+        }
+
+        &__item {
+            display: inline-block;
+            width: $thumbWidth;
+            margin-left: rem(20px);
+
+            &:last-child {
+                margin-right: rem(20px);
+            }
+            
+            &.swiper-slide-active {
+                transition: all 0.6s ease-in;
+
+                .fb__list__summary {
+                    display: block;
+                }
+
+                img {
+                    height: $activeHeight;
+
+                }
+            }
+        }
+
+        &__empty {
+            width: 100%;
+            padding: rem(80px 0);
+            @include fontcss($white, 200, rem(16px), 1.5);
+            text-align: center;
+
+            &:before {
+                content: "";
+                display: block;
+                width: rem(40px);
+                height: rem(40px);
+                margin: 0 auto rem(12px);
+                background: url("/assets/images/guide/ico-header-search-wh.svg") no-repeat center center / 100% auto;
+            }
+        }
+
+        &__thumb {
+            display: flex;
+            align-items: center;
+            width: 100%;
+            height: $activeHeight;
+            border-radius: rem(20px);
+            font-size: 0;
+
+            img {
+                width: 100%;
+                height: $thumbHeight;
+                border-radius: rem(20px);
+                box-shadow: rem(8px 20px 20px) rgba(0, 0, 0, 0.3);
+
+                    transition: all 0.25s ease-in-out;
+
+            }
+        }
+
+        &__summary {
+            display: none;
+            padding: rem(0 12px);
+            margin-top: rem(30px);
+            white-space: normal;
+        }
+
+        &__name {
+            display: block;
+            margin-bottom: rem(8px);
+            word-break: break-all;
+            @include fontcss($bright, bold, rem(18px), 1.2);
+            @include line(1);
+        }
+
+        &__genre,
+        &__basic {
+            display: block;
+            margin-bottom: rem(8px);
+            font-size: 0;
+
+            span {
+                @include fontcss($medium, 200, rem(14px), 1.2);
+            }
+        }
+
+        &__text {
+            @include fontcss($medium, 200, rem(14px), 1.4);
+            @include line(2);
+        }
+
+        &__overview {
+            display: block;
+            margin-top: rem(12px);
+            @include fontcss($medium, 200, rem(13px), 1.4);
+
+            &--korean {
+                font-size: rem(12px);
+            }
+        }
+    }
+}
