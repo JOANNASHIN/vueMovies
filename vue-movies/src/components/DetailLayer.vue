@@ -5,7 +5,7 @@
             <button class="fb__detail__close" @click="closeDetailLayer()">close</button>
 
             <figure class="fb__list__thumb mainVisual__thumb swiper-item">
-                <img :src="`https://image.tmdb.org/t/p/w500${detail.mainPosterPath}`" alt="">
+                <img :src="`${baseImageUrl}${detail.mainPosterPath}`" alt="">
             </figure>
         </div>
 
@@ -46,7 +46,7 @@
                         <ul class="cast__list">
                             <li class="cast__card" v-for="(person, index) in detail.cast" :key="`cast${index}`">
                                 <figure class="cast__card__thumb">
-                                    <img :src="`https://image.tmdb.org/t/p/w500${person.profile_path}`" alt="">
+                                    <img :src="`${baseImageUrl}${person.profile_path}`" alt="">
                                 </figure>
 
                                 <span class="cast__card__name">{{ person.name }}</span>

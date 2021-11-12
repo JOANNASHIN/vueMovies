@@ -28,7 +28,7 @@
                     <template v-if="listData && listData.length">
                         <li class="fb__list__item swiper-slide" v-for="(list, index) in listData" :key="index">
                             <figure class="fb__list__thumb" @click="openDetailLayer($event, list)">
-                                <img :src="`https://image.tmdb.org/t/p/w500${list.poster_path}`" alt="">
+                                <img :src="`${baseImageUrl}${list.poster_path}`" alt="">
                             </figure>
 
                             <div class="fb__list__summary">

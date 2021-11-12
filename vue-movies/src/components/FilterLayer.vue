@@ -17,31 +17,22 @@
                         <legend>상세 필터 선택 영역</legend>
 
                         <div class="fb__filter__cont">
+
                             <!-- WHERE TO WATCH -->
-                            <section class="fb__filter__list">
-                                <h3 class="fb__filter__name">WHERE TO WATCH </h3>
+                            <section class="fb__filter__list fb__filter__providers" v-if="providers && providers.length">
+                                <h3 class="fb__filter__name">WHERE TO WATCH</h3>
                 
                                 <div class="fb__filter__box">
                                     <div class="fb__filter__flex">
-                                        <label class="fb__comm__radio">
-                                            <input type="radio" name="filterPrice" value="all" checked>
-                                            <span>Netfilx</span>
-                                        </label>
-                                
-                                        <label class="fb__comm__radio">
-                                            <input type="radio" name="filterPrice" value="a">
-                                            <span>Netfilx</span>
-                                        </label>
-                                
-                                        <label class="fb__comm__radio">
-                                            <input type="radio" name="filterPrice" value="b">
-                                            <span>primo</span>
-                                        </label>
-
-                                        <label class="fb__comm__radio">
-                                            <input type="radio" name="filterPrice" value="b">
-                                            <span>primo</span>
-                                        </label>
+                                        <template v-for="(provider, index) in providers">
+                                            <label class="providers__list" :key="`providers${index}`">
+                                                <input type="radio" name="filterProvider" :value="provider.provider_id" checked>
+                                                <figure class="providers__logo">
+                                                    <img :src="`${baseImageUrl}${provider.logo_path}`" alt="">
+                                                </figure>
+                                                <span class="providers__name">{{ provider.provider_name }}</span>
+                                            </label>
+                                        </template>
                                     </div>
                                 </div>
                             </section>
@@ -87,14 +78,36 @@ export default {
         return {
             isFilterShow: false,
             menus: [],
+            providers: null,
         }
     },
 
-     created() {
+    created() {
+        this.requestProviders();
         this.requestMenus();
     },
 
     methods: {
+        async requestProviders() {
+            try {
+                const response = await this.$store.dispatch("network/request", {
+                    method: "get",
+                    url: "/watch/providers/tv",
+                    data: {
+                        watch_region: "KR"
+                    }
+                })
+
+                if (response) {
+                    this.providers = response.results;
+                }
+            }
+
+            catch(ex) {
+                console.error(ex);
+            }
+        },
+
         async requestMenus() {
             try {
                 const response = await this.$store.dispatch("network/request", {
