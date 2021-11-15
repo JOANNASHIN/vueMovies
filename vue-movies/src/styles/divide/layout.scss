@@ -1,7 +1,19 @@
 .fb {
-    background: $black;
+    overflow: hidden;
+    background: $background;
+
+    #app {
+        height: 100%;
+    }
+
+    &__layout {
+        overflow-y: auto;
+        height: 100%;
+    }
 
     &__header {
+        padding: rem(20px);
+
         &__filter {
             position: fixed;
             top: rem(20px);
@@ -71,12 +83,11 @@
         }
     }
     
-    &__layout {
-        padding: rem(8px 20px 32px);
+    &__content {
+        padding: rem(0 20px 32px);
     }
 
     &__title {
-        padding-top: rem(20px);
         @include fontcss($medium, bold, rem(20px), 1.2);
     }
 
@@ -86,7 +97,6 @@
         position: relative;
         width: rem(240px);
         height: rem(32px);
-        margin-top: rem(12px);
         background: rgba(0, 0, 0, 0.6);
         border-radius: rem(20px);
         font-size: 0;
@@ -158,13 +168,14 @@
     &__skeleton {
         .animate {
             animation: shimmer 10s infinite linear;
-            background: linear-gradient(to right, $bright 4%, #eee 25%, $bright 36%);
+            background: linear-gradient(to right, #a3a3a3 10%, #aaa 60%, #c9c9c9 90%);
         }
         
         @keyframes shimmer {
             0% {
             background-position: -1000px 0;
             }
+            
             100% {
             background-position: 1000px 0;
             }
@@ -206,11 +217,6 @@
         }
     }
 
-    &__footer {
-        // height: rem(50px);
-
-        
-    }
 
     // &__footer {
     //     height: rem(50px);

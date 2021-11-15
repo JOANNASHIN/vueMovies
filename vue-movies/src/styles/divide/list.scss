@@ -1,5 +1,31 @@
 .fb {
     &__list {
+        .pie-chart {
+            position: relative;
+            display:inline-block;
+            width: 300px;
+            height: 300px;
+            border-radius: 50%;
+            transition: 0.3s;
+            // background: conic-gradient(red 0% 80%, #ffffff 80% 100%);
+
+            position: absolute;
+            top: 0;
+            left: 0;z-index: 1000;
+          }
+
+          span.center{
+            background: #fff;
+            display : block;
+            position: absolute;
+            top:50%; left:50%;
+            width:200px; height:200px;
+            border-radius: 50%;
+            text-align:center; line-height: 200px;
+            font-size:30px;
+             transform: translate(-50%, -50%);
+          }
+          
         display: block;
         overflow: hidden;
         position: relative;
@@ -68,6 +94,7 @@
         &__thumb {
             display: flex;
             align-items: center;
+            position: relative;
             width: 100%;
             height: $activeHeight;
             border-radius: rem(20px);

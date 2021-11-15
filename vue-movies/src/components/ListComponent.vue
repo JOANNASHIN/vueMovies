@@ -1,7 +1,7 @@
 <template>
     <div class="fb__list" :class="detailActive == true ? 'detailOpen' : ''">
         <template v-if="false === fetches">
-            <div class="fb__skeleton fb__list">
+            <div class="fb__skeleton">
                 <ul class="fb__list__wrapper">
                     <li class="fb__list__item" v-for="(list, index) in 3" :key="index">
                         <div class="fb__list__thumb animate"></div>
@@ -24,11 +24,14 @@
 
         <template v-else-if="true === fetches">
             <div ref="listSlider" class="fb__list__slider swiper-container">
+
                 <ul class="fb__list__wrapper swiper-wrapper">
                     <template v-if="listData && listData.length">
                         <li class="fb__list__item swiper-slide" v-for="(list, index) in listData" :key="index">
+                            <!-- 썸네일 -->
                             <figure class="fb__list__thumb" @click="openDetailLayer($event, list)">
                                 <img :src="`${baseImageUrl}${list.poster_path}`" alt="">
+                                <!-- <div class="pie-chart pie-chart1"><span class="center">{{list.}}</span></div> -->
                             </figure>
 
                             <div class="fb__list__summary">
@@ -63,9 +66,15 @@
                     </template>
                     <template v-else>
                         <li class="fb__list__empty">
-                            찾으시는 것이 없나요 ?<br />
-                            띄어쓰기도 구분하니 참고 부탁드려요.<br />
-                            다른단어로도 검색해보세요 !
+                            <template v-if="true === fromSearch">
+                                찾으시는 것이 없나요 ?<br />
+                                띄어쓰기도 구분하니 참고 부탁드려요.<br />
+                                다른단어로도 검색해보세요 !
+                            </template>
+                            <template v-else>
+                                적용된 필터로는 검색된 결과가 없습니다 !<br>
+                                필터를 다르게 적용하여주세요 :D
+                            </template>
                         </li>
                     </template>
                 </ul>
@@ -93,15 +102,20 @@ export default {
         DetailLayer
     },
     props: {
+        fetches: {
+            default: false,
+            type: Boolean
+        },
+
         listData: {
             default: [],
             type: Array
         },
         
-        fetches: {
+        fromSearch: {
             default: false,
             type: Boolean
-        }
+        },
     },
 
     data() {  
@@ -122,12 +136,35 @@ export default {
             if (true === status) {
                 this.$nextTick(() => {
                     this.listSlider();
+                    this.draw();
                 })
             }
         },
     },
 
+    mounted() {
+    },
+
     methods: {
+        draw() {
+            // var i=1;
+
+            // var func1 = setInterval(function(){
+            //     if(i < 80){
+            //         color1(i);
+            //         i++;
+            //     } else{
+            //         clearInterval(func1);
+            //     }
+            // },10);
+
+
+            // function color1(i, classname,colorname){
+            //     const test = document.querySelector(".pie-chart1");
+            //     test.style.background = `conic-gradient(red 0% ${i}%, #ffffff ${i}% 100%)`;
+            // }
+        },
+      
         listSlider() {
             new Swiper(this.$refs.listSlider, {
                 loop: false,

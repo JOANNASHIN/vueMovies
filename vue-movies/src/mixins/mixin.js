@@ -13,6 +13,22 @@ const mixin = {
     },
 
     methods: {
+        getMultiParams(_selected) {
+            let _params = "";
+
+            if (_selected && _selected.length) {
+                _selected.forEach((v, index) => {
+                    _params += `${v}${index == _selected.length - 1 ? '' : '|'}`
+                });
+            }
+            return _params;
+        }
+    },
+
+    filters: {
+        toUpperCase(value) {
+            return value ? value.toUpperCase() : "";
+        }
     }
 }
 

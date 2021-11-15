@@ -1,26 +1,21 @@
 <template>
     <section class="fb__main">
         <!-- 타이틀 -->
-        <h2 class="fb__main__title fb__title">NOW NETFLEX</h2>
+        <h2 class="fb__main__title fb__title">NOW {{ provideName | toUpperCase}}</h2>
 
         <!-- 리스트 -->
-        <list-component :listData="tvList" :fetches="fetches.list"></list-component>
-
-        <!-- 필터 레이어 -->
-        <filter-layer @closeFilterLayer="closeFilterLayer($event)"></filter-layer>
+        <list-component :listData="tvList" :fetches="fetches.list" :fromSearch="fromSearch"></list-component>
     </section>
 </template>
 
 <script>
 import eventBus from "../utils/bus";
 import ListComponent from "../components/ListComponent";
-import FilterLayer from "../components/FilterLayer";
 
 export default {
-    name: "Home",
+    name: "Main",
     components: {
         ListComponent,
-        FilterLayer
     },
     
     data() {
@@ -28,55 +23,47 @@ export default {
             fetches: {
                 list: false,
             },
-            movieList: [],
+
+            requests: {
+                tvList: {
+                    with_ott_providers: 8,
+                    ott_region: "KR",
+                    with_genres: "",
+                },
+            },
+
+            fromSearch: false,
+            provideName: "NETFLEX",
             tvList: [],
         }
     },
 
     created() {
-        this.requestMovieList();
         this.requestTvList();
         eventBus.$on("search:tv", this.searchInit);
-        eventBus.$on("openFilterLayer", this.openFilterLayer);
+        eventBus.$on("filter:apply", this.filterApply)
     },
 
     methods: {
-        async requestMovieList() {
-            try {
-                const response = await this.$store.dispatch("network/request", {
-                    method: "get",
-                    url: "/discover/movie",
-                    data: {
-                        language: "en-US",
-                    }
-                })
-
-                if (response) this.movieList = response.results;
-                this.fetches.list = true;
-            }
-
-            catch(ex) {
-                console.error(ex);
-                this.fetches.list = 'error';
-            }
-        },
-
         async requestTvList() {
+            const _localStorage = JSON.parse(window.localStorage.getItem("filter"))
+            if (_localStorage) this.provideName = _localStorage.provider_name;
+
             try {
                 const response = await this.$store.dispatch("network/request", {
                     method: "get",
                     url: "/discover/tv",
-                    data: {
-                        with_ott_providers: 8,
-                        ott_region: "KR"
-                    }
+                    data: _localStorage ? Object.assign(this.requests.tvList, _localStorage) : this.requests.tvList
                 })
 
                 if (response) this.tvList = response.results;
+                this.fetches.list = true;
+                this.fromSearch = false;
             }
 
             catch(ex) {
-                console.error(ex);
+                console.error("requestTvList has exception...", ex);
+                this.fetches.list = "error";
             }
         },
         
@@ -85,31 +72,49 @@ export default {
                 const response = await this.$store.dispatch("network/request", {
                     method: "get",
                     url: "/search/tv",
-                    data: {
-                        with_ott_providers: 8,
-                        ott_region: "KR",
+                    data: Object.assign(this.requests.tvList, {
                         query: keyword
-                    }
+                    })
                 })
 
                 if (response) this.tvList = response.results;
+
+                this.fetches.list = true;
+                this.fromSearch = true;
             }
 
             catch(ex) {
-                console.error(ex);
+                console.error("requestSearchTvList has exception...", ex);
+                this.fetches.list = "error";
             }
         },
 
         searchInit(keyword) {
-            this.requestSearchTvList(keyword);
+            if (keyword) {
+                this.requestSearchTvList(keyword);
+            }
+            else {
+                this.requestTvList();
+            }
         },
 
-        openFilterLayer() {
-            this.isFilterShow = true;
-        },
+        filterApply(parameter) {
+            const { provider_name, with_ott_providers, with_genres } = parameter;
 
-        closeFilterLayer() {
-            this.isFilterShow = false;
+            //이름 설정
+            this.provideName = provider_name;
+
+            //params
+            Object.assign(this.requests.tvList, {
+                with_ott_providers,
+                with_genres
+            })
+
+            //localStorage
+            window.localStorage.setItem("filter", JSON.stringify(parameter))
+            
+            //request api
+            this.requestTvList();
         },
     }
 };

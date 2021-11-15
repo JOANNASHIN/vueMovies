@@ -249,11 +249,11 @@ select {
     outline: none;
     appearance: none;
     width: 100%;
-    padding: rem(16px 46px 16px 16px);
-    // background: #fff url("../../assets/images/guide/ico-dropdown-14-x-8.svg") no-repeat calc(100% - #{rem(16px)}) center / rem(14px 8px);
+    padding: rem(14px 46px 14px 16px);
+    background: #fff url("/assets/images/guide/ico-dropdown-14-x-8.svg") no-repeat calc(100% - #{rem(16px)}) center / rem(14px 8px);
     border: 1px solid $light;
     border-radius: rem(6px);
-    @include fontcss($black, 200, rem(14px));
+    @include fontcss($black, 600, rem(13px), 1.2);
     vertical-align: middle;
     box-sizing: border-box;
 
@@ -264,7 +264,7 @@ select {
     &:disabled {
         background: {
             color: $bright;
-            // image: url("../../assets/images/guide/ico-dropdown-14-x-8-grey.svg");
+            image: url("/assets/images/guide/ico-dropdown-14-x-8-grey.svg");
         }
         border-color: $light;
         color: $silver;

@@ -1,4 +1,4 @@
-# vue-movies
+# now-playing
 
 ## Project setup
 ```

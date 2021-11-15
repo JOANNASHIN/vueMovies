@@ -16,6 +16,7 @@
 
 <script>
 import eventBus from "../utils/bus";
+
 export default {
     name: "Header",
     data() {
@@ -46,13 +47,9 @@ export default {
         },
 
         searchInit() {
-            if (!this.searchWord) return ;
+            // if (!this.searchWord) return ;
             eventBus.$emit("search:tv", this.searchWord);
         },
-
-        openFilterLayer() { 
-            eventBus.$emit("openFilterLayer");
-        }
     }
 }
 </script>
