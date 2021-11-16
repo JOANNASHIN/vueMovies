@@ -107,6 +107,7 @@
 
 <script>
 import Swiper from "swiper";
+import eventBus from "../utils/bus";
 import DetailLayer from "./DetailLayer.vue";
 
 export default {
@@ -299,7 +300,9 @@ export default {
             
             this.$nextTick(() => {
                 this.detailActive = true;
+                // eventBus.$emit("filter:close")
             })
+
         },
 
         closeDetailLayer() {

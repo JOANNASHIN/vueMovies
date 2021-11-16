@@ -113,6 +113,7 @@ export default {
     },
 
     created() {
+        eventBus.$on("filter:close", this.closeFilterLayer)
         this.requestFilterData();
     },
 
@@ -217,6 +218,10 @@ export default {
                 genres: [],
                 sort_by: "popularity.desc"
             };
+        },
+
+        closeFilterLayer() {
+            this.isFilterShow = false;
         }
     }
 }
