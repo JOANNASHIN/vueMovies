@@ -33,6 +33,12 @@ export default {
         Spinner,
     },
 
+    // metaInfo: {
+    //     meta: [
+    //         { name: '', content: '' }
+    //     ]
+    // },
+
     data() {
         return {
             loadingStatus: false,

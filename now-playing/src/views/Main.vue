@@ -46,6 +46,8 @@ export default {
 
     methods: {
         async requestTvList() {
+            this.fetches.list = false;
+
             const _localStorage = JSON.parse(window.localStorage.getItem("filter"))
             if (_localStorage) this.provideName = _localStorage.provider_name;
 
@@ -68,6 +70,8 @@ export default {
         },
         
         async requestSearchTvList(keyword) {
+            this.fetches.list = false;
+
             try {
                 const response = await this.$store.dispatch("network/request", {
                     method: "get",

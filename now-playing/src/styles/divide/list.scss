@@ -78,8 +78,9 @@
         &__empty {
             width: 100%;
             padding: rem(80px 0);
-            @include fontcss($white, 200, rem(16px), 1.5);
+            @include fontcss($white, 200, rem(13px), 1.5);
             text-align: center;
+            letter-spacing: 1px;
 
             &:before {
                 content: "";

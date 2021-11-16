@@ -3,7 +3,8 @@
         <form action="" class="fb__search" @submit.prevent="searchInit($event)">
             <fieldset class="fb__search__wrapper">
                 <legend>검색하기</legend>
-                <input type="search" class="fb__search__input" placeholder="Search" v-model.trim="searchWord" @keyup.stop="searchInit($event)">
+                <!--  @keyup.stop="searchInit($event)" -->
+                <input type="search" class="fb__search__input" placeholder="Search" v-model.trim="searchWord">
             </fieldset>
         </form>
 
@@ -28,6 +29,7 @@ export default {
     },
     created() {
         this.requestMenus();
+        eventBus.$on("filter:apply", this.searchReset)
     },
 
     methods: {
@@ -49,6 +51,10 @@ export default {
         searchInit() {
             // if (!this.searchWord) return ;
             eventBus.$emit("search:tv", this.searchWord);
+        },
+
+        searchReset() {
+            this.searchWord = "";
         },
     }
 }

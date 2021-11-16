@@ -67,13 +67,19 @@
                     <template v-else>
                         <li class="fb__list__empty">
                             <template v-if="true === fromSearch">
-                                찾으시는 것이 없나요 ?<br />
-                                띄어쓰기도 구분하니 참고 부탁드려요.<br />
-                                다른단어로도 검색해보세요 !
+                                No items were found that<br> 
+                                match with your keyword.<br>
+                                <!-- <br> -->
+                                <!-- Please note that<br> spacing is also classified.<br> -->
+                                <br>
+                                Please try again with a different keyword. : )
                             </template>
                             <template v-else>
-                                적용된 필터로는 검색된 결과가 없습니다 !<br>
-                                필터를 다르게 적용하여주세요 :D
+                                No items were found that<br> 
+                                match with your filter.<br>
+
+                                <br>
+                                Please try again with a different filter. :)
                             </template>
                         </li>
                     </template>
@@ -83,8 +89,8 @@
 
         <template v-else-if="'error' === fetches">
             <p class="fb__error">
-                오류가 발생하였습니다.<br>
-                잠시 후 다시 시도해주세요.
+                An error has occurred.<br>
+                Please try again later.
             </p>
         </template>
         
@@ -118,12 +124,13 @@ export default {
         },
     },
 
-    data() {  
+    data() {
         return {
             detailActive: false,
             detail: {},
             genres: [],
-            targetId: null
+            targetId: null,
+            listSlideObj: null
         }
     },
 
@@ -166,9 +173,14 @@ export default {
         },
       
         listSlider() {
-            new Swiper(this.$refs.listSlider, {
+            if (this.listSlideObj) {
+                this.listSlideObj.destroy();
+                this.listSlideObj = null;
+            }
+            this.listSlideObj = new Swiper(this.$refs.listSlider, {
                 loop: false,
-                slidesPerView: "auto"
+                slidesPerView: "auto",
+                initialSlide: 0
             })
         },
 
