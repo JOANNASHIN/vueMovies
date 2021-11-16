@@ -1,3 +1,4 @@
+@media screen and (max-width: 1100px) {
 .fb {
     &__list {
         display: block;
@@ -169,6 +170,135 @@
 
             &--korean {
                 font-size: rem(12px);
+            }
+        }
+    }
+}
+}
+@media screen and (min-width: 1100px) {
+    .fb {
+        &__list {           
+            &__wrapper {
+                display: block;
+                margin: 0 -10px;
+            }
+
+            &__item {
+                display: inline-block;
+                width: 280px;
+                margin: 30px 10px 0;
+                vertical-align: top;
+                cursor: pointer;
+            }
+
+            &__empty {
+                width: 100%;
+                padding: 100px 0;
+                @include fontcss($white, 200, 16px, 1.5);
+                text-align: center;
+                letter-spacing: 1px;
+    
+                &:before {
+                    content: "";
+                    display: block;
+                    width: 40px;
+                    height: 40px;
+                    margin: 0 auto 12px;
+                    background: url("/assets/images/guide/ico-header-search-wh.svg") no-repeat center center / 100% auto;
+                }
+            }
+    
+
+            &__thumb {
+                position: relative;
+                width: 100%;
+                min-height: 414px;
+                font-size: 0;
+    
+                img {
+                    width: 100%;
+                    border-radius: 20px;
+                    box-shadow: 8px 20px 20px rgba(0, 0, 0, 0.3);
+                    transition: all 0.25s ease-in-out;
+                }
+            }
+
+            &__pie {
+                position: absolute;
+                bottom: 0;
+                right: 0;
+                z-index: 1;
+                width: 56px;
+                height: 56px;
+                border-radius: 50%;
+                transition: 0.3s;
+                transform: translate(20%, 20%);
+            }
+    
+            &__score {
+                display: flex;
+                align-items: center;
+                justify-content: center;
+                position: absolute;
+                top: 50%; 
+                left: 50%;
+                width: 42px;
+                height: 42px;
+                border-radius: 50%;
+                background: #fff;
+                text-align: center; 
+                transform: translate(-50%, -50%);
+    
+                em {
+                    display: inline-block;
+                    @include fontcss($black, bold, 18px, 1);
+                    vertical-align: middle;
+                }
+    
+                &:after {
+                    content: "%";
+                    display: inline-block;
+                    vertical-align: sub;
+                    @include fontcss($black, 600, 10px, 1);
+                }
+            }
+
+            &__summary {
+                display: none;
+            }
+    
+            &__name {
+                display: block;
+                margin-bottom: 8px;
+                word-break: break-all;
+                @include fontcss($bright, bold, 22px, 1.2);
+                @include line(1);
+            }
+    
+            &__genre,
+            &__basic {
+                display: block;
+                margin-bottom: 8px;
+                font-size: 0;
+    
+                span {
+                    @include fontcss($medium, 200, 17px, 1.2);
+                }
+            }
+    
+            &__text {
+                @include fontcss($medium, 200, 18px, 1.4);
+                @include line(2);
+            }
+    
+            &__overview {
+                display: block;
+                margin-top: 12px;
+                @include fontcss($medium, 200, 17px, 1.6);
+    
+                &--korean {
+                    font-size: 18px;
+                }
             }
         }
     }

@@ -151,6 +151,7 @@ button {
     background: none;
     outline: 0;
     user-select: none;
+    cursor: pointer;
 }
 
 label {
@@ -206,15 +207,6 @@ input[type='text'] {
 
 input[type='tel'] {
     @include defaultInputStyle;
-}
-
-input[type='search'] {
-    @include defaultInputStyle;
-
-    &::-webkit-search-cancel-button {
-        display: none;
-        appearance: none;
-    }
 }
 
 input[type='password'] {

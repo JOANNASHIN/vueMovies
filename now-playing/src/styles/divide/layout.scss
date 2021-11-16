@@ -120,16 +120,26 @@
         }
 
         &__input {
-            background: none !important;
-            border: none !important;
-            padding: {
-                top: rem(12px) !important;
-                right: 0 !important;
-                bottom: rem(12px) !important;
-                left: 0 !important;
+            width: 100%;
+            padding: rem(12px 0);
+            background: none;
+            border: none;
+            border-radius: rem(6px);
+            color: $black;
+            font-weight: 200;
+            font-size: rem(14px);
+            box-sizing: border-box;
+            color: $white;
+            font-size: rem(12px);
+
+            &::placeholder {
+                color: $medium;
             }
-            color: $white !important;
-            font-size: rem(12px) !important;
+        
+            &::-webkit-search-cancel-button {
+                display: none;
+                appearance: none;
+            }
         }
 
         // &__button {
@@ -216,45 +226,38 @@
             }
         }
     }
+}
 
+@media screen and (min-width: 1100px) {
+    .fb {
+        &__header {
+            padding: 60px 0 40px;
+        }
 
-    // &__footer {
-    //     height: rem(50px);
+        &__search {
+            display: block;
+            width: 600px;
+            max-width: 50%;
+            height: 50px;
+            margin: 0 auto;
 
-    //     &__inner {
-    //         display: flex;
-    //         flex-wrap: nowrap;
-    //         justify-content: center;
-    //         position: fixed;
-    //         bottom: 0;
-    //         left: 0;
-    //         z-index: 5;
-    //         width: 100%;
-    //         height: rem(20px);
-    //         background: rgba(80, 80, 80, 0.9);
-    //         border: {
-    //             top-right-radius: rem(30px);
-    //             top-left-radius: rem(30px);
-    //         };
-    //     }
+            input[type=search] {
+                height: 50px;
+                padding: 0;
+                font-size: 18px;
+            }
+        }
 
-    //     &__menu {
-    //         width: rem(30px);
-    //         height: rem(30px);
-    //         margin: rem(0 20px);
-    //         border-radius: 50%;
-    //         box-shadow: rem(0px 0px 10px) $dark;
-    //         transform: translate(0, -80%);
-    //         font-size: 0;
+        &__title {
+            display: block;
+            margin-bottom: 10px;
+            @include fontcss($medium, bold, 30px, 1.2);
+        }
 
-    //         &.filter {
-    //             background: url("/assets/images/common/ico_search_filter.png") no-repeat center center / rem(40px 40px);//100% auto;
-    //         }
-
-    
-    //         &.search {
-    //             background: url("/assets/images/guide/ico-header-search-wh.svg") no-repeat center center / 100% auto;//rem(24px 24px);
-    //         }
-    //     }
-    // }
+        &__main {
+            display: block;
+            width: 1200px !important;
+            margin: 0 auto;
+        }
+    }
 }

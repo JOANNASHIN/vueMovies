@@ -3,7 +3,7 @@
         <template v-if="false === fetches">
             <div class="fb__skeleton">
                 <ul class="fb__list__wrapper">
-                    <li class="fb__list__item" v-for="(list, index) in 3" :key="index">
+                    <li class="fb__list__item" v-for="(list, index) in deviceType == 'MOBILE' ? 3 : 20" :key="index">
                         <div class="fb__list__thumb animate"></div>
 
                         <div class="fb__list__summary">
@@ -23,7 +23,7 @@
         </template>
 
         <template v-else-if="true === fetches">
-            <div ref="listSlider" class="fb__list__slider swiper-container">
+            <div :ref="deviceType == 'MOBILE' ? 'listSlider' : ''" class="fb__list__slider swiper-container">
 
                 <ul class="fb__list__wrapper swiper-wrapper">
                     <template v-if="listData && listData.length">
@@ -31,7 +31,8 @@
                             <!-- 썸네일 -->
                             <figure class="fb__list__thumb" @click="openDetailLayer($event, list)">
                                 <img :src="`${baseImageUrl}${list.poster_path}`" alt="">
-                                <div class="fb__list__pie pie-chart1" :data-score="list.vote_average * 10">
+
+                                <div class="fb__list__pie" :data-score="list.vote_average * 10" :style="`background: conic-gradient(${getColor(list.vote_average * 10)} 0% ${list.vote_average * 10}%, #081c22 0% 100%)`">
                                     <span class="fb__list__score">
                                         <em>{{list.vote_average * 10}}</em>
                                     </span>
@@ -154,24 +155,25 @@ export default {
         },
     },
 
-    mounted() {
-    },
-
     methods: {
+        getColor(_score) {
+            const chartBarColor = ["#ea148c", "#805be7", "#21d07a", "#d27701", "#d2d531"];
+            return _score > 90 ? chartBarColor[0] : _score > 80 ? chartBarColor[1] : _score > 70 ? chartBarColor[2] : _score > 60 ? chartBarColor[3] : chartBarColor[4];
+        },
+
         fillDonut(_activePie, _start, _color) {
             _activePie.style.background = `conic-gradient(${_color} 0% ${_start}%, #081c22 ${_start}% 100%)`;
         },
 
-        draw() {
+        chartAnimation() {
             const _active = document.querySelector(".swiper-slide-active");
-            const _activePie = _active ? _active.querySelector(".pie-chart1") : null;
-            const chartBarColor = ["#ea148c", "#805be7", "#21d07a", "#d27701", "#d2d531"];
+            const _activePie = _active ? _active.querySelector(".fb__list__pie") : null;
             let _start = 1;
 
             if (!_activePie) return ;
 
             const _score = _activePie.getAttribute("data-score");
-            const _color = _score > 90 ? chartBarColor[0] : _score > 80 ? chartBarColor[1] : _score > 70 ? chartBarColor[2] : _score > 60 ? chartBarColor[3] : chartBarColor[4];
+            const _color = this.getColor(_score)
 
             const increaseScore = setInterval(() => {
                 if (_start < _score) {
@@ -188,20 +190,23 @@ export default {
       
         listSlider() {
             const vue = this;
+            if (!this.$refs.listSlider) return ;
+
             if (this.listSlideObj) {
                 this.listSlideObj.destroy();
                 this.listSlideObj = null;
             }
+            
             this.listSlideObj = new Swiper(this.$refs.listSlider, {
                 loop: false,
                 slidesPerView: "auto",
                 initialSlide: 0,
                 on: {
                     init() {
-                        vue.draw();
+                        vue.chartAnimation();
                     },
                     slideChangeTransitionEnd() {
-                        vue.draw();
+                        vue.chartAnimation();
                     }
                 }
             })

@@ -138,6 +138,7 @@
                     display: inline-block;
                     position: relative;
                     width: rem(64px);
+                    height: rem(64px);
                     margin-right: rem(10px);
                     border-radius: rem(6px);
                     box-shadow: rem(2px 2px 0 2px) $black;
@@ -152,7 +153,7 @@
                     overflow: hidden;
                     display: block;
                     width: 100%;
-                    height: rem(64px);
+                    height: 100%;
                     border-radius: rem(6px);
                     @include imageResize("width");
                 }
@@ -247,4 +248,115 @@
         }
 
     }
+}
+
+@media screen and (min-width: 1100px) {
+    .fb {
+        &__filter {
+            left: 50%;
+            width: 1200px;
+            margin-left: -600px;
+
+            &.active {
+                .fb__filter__close {
+                    background-size: 16px 16px !important; 
+                }
+            }
+
+            &__top {
+                padding: 40px 0;
+            }
+
+            &__title {
+                font-size: 16px;
+            }
+
+            &__close {
+                bottom: -110px;
+                width: 50px;
+                height: 50px;
+                background-size: auto 30px !important; 
+                cursor: pointer;
+            }
+
+            &__nav {
+                padding: 0 30px;
+            }
+
+            &__reset {
+                background-size: 30px 30px;
+            }
+
+            &__apply {
+                padding: 2px 12px 2px 16px;
+
+                span {
+                    font-size: 14px;
+                }
+
+                &:after {
+                    width: 24px;
+                    height: 30px;
+                    border-radius: 50%;
+                    background: url("/assets/images/common/icon-checkbox-filter.svg") no-repeat right center / auto 12px;
+                }
+            }
+
+            &__scroll {
+                height: auto;
+                max-height: 600px;
+                padding: 10px 30px;
+            }
+
+            &__section {
+                margin-bottom: 30px;
+            }
+
+            &__name {
+                display: block;
+                padding-bottom: 4px;
+                font-size: 16px;
+            }
+
+            &__providers {
+                .fb__filter__flex {
+                    width: 100%;
+                    margin: 0 -10px 0 0 !important;
+                    padding-left: 0 !important;
+                    white-space: normal;
+                }
+
+                .providers {
+                    &__list {
+                        width: 60px;
+                        height: 60px;
+                        margin: 0 10px 8px 0;
+                    }
+
+                    &__name {
+                        font-size: 13px;
+                        @include line(2);
+                    }
+                }
+            }
+
+            &__sort {
+                select {
+                    width: 500px;
+                    font-size: 15px;
+                }
+            }
+           
+            &__genre {
+                label {
+                    flex: 0 0 33.3333%;
+                }
+                
+                span {
+                    padding: 5px 10px;
+                    font-size: 15px;
+                }
+            }
+        }
+    }   
 }

@@ -1,7 +1,9 @@
 <template>
-    <figure class="fb__loading" v-show="loading">
-        <img src="/assets/images/common/loading.gif" alt="">
-    </figure>
+    <div>
+        <!-- <figure class="fb__loading" v-show="loading">
+            <img src="/assets/images/common/loading.gif" alt="">
+        </figure> -->
+    </div>
 </template>
 
 <script>
