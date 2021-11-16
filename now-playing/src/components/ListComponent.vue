@@ -31,9 +31,14 @@
                             <!-- 썸네일 -->
                             <figure class="fb__list__thumb" @click="openDetailLayer($event, list)">
                                 <img :src="`${baseImageUrl}${list.poster_path}`" alt="">
-                                <!-- <div class="pie-chart pie-chart1"><span class="center">{{list.}}</span></div> -->
+                                <div class="fb__list__pie pie-chart1" :data-score="list.vote_average * 10">
+                                    <span class="fb__list__score">
+                                        <em>{{list.vote_average * 10}}</em>
+                                    </span>
+                                </div>
                             </figure>
 
+                            <!-- 정보 -->
                             <div class="fb__list__summary">
                                 <!-- 프로그램명 -->
                                 <strong class="fb__list__name">
@@ -64,6 +69,7 @@
                             </div>
                         </li>
                     </template>
+                    
                     <template v-else>
                         <li class="fb__list__empty">
                             <template v-if="true === fromSearch">
@@ -143,7 +149,6 @@ export default {
             if (true === status) {
                 this.$nextTick(() => {
                     this.listSlider();
-                    this.draw();
                 })
             }
         },
@@ -153,26 +158,36 @@ export default {
     },
 
     methods: {
+        fillDonut(_activePie, _start, _color) {
+            _activePie.style.background = `conic-gradient(${_color} 0% ${_start}%, #081c22 ${_start}% 100%)`;
+        },
+
         draw() {
-            // var i=1;
+            const _active = document.querySelector(".swiper-slide-active");
+            const _activePie = _active ? _active.querySelector(".pie-chart1") : null;
+            const chartBarColor = ["#ea148c", "#805be7", "#21d07a", "#d27701", "#d2d531"];
+            let _start = 1;
 
-            // var func1 = setInterval(function(){
-            //     if(i < 80){
-            //         color1(i);
-            //         i++;
-            //     } else{
-            //         clearInterval(func1);
-            //     }
-            // },10);
+            if (!_activePie) return ;
 
+            const _score = _activePie.getAttribute("data-score");
+            const _color = _score > 90 ? chartBarColor[0] : _score > 80 ? chartBarColor[1] : _score > 70 ? chartBarColor[2] : _score > 60 ? chartBarColor[3] : chartBarColor[4];
 
-            // function color1(i, classname,colorname){
-            //     const test = document.querySelector(".pie-chart1");
-            //     test.style.background = `conic-gradient(red 0% ${i}%, #ffffff ${i}% 100%)`;
-            // }
+            const increaseScore = setInterval(() => {
+                if (_start < _score) {
+                    this.fillDonut(_activePie, _start, _color);
+                    _start++;
+
+                } 
+                else {
+                    clearInterval(increaseScore);
+                }
+
+            },10);
         },
       
         listSlider() {
+            const vue = this;
             if (this.listSlideObj) {
                 this.listSlideObj.destroy();
                 this.listSlideObj = null;
@@ -180,7 +195,15 @@ export default {
             this.listSlideObj = new Swiper(this.$refs.listSlider, {
                 loop: false,
                 slidesPerView: "auto",
-                initialSlide: 0
+                initialSlide: 0,
+                on: {
+                    init() {
+                        vue.draw();
+                    },
+                    slideChangeTransitionEnd() {
+                        vue.draw();
+                    }
+                }
             })
         },
 

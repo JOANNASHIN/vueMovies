@@ -1,31 +1,5 @@
 .fb {
     &__list {
-        .pie-chart {
-            position: relative;
-            display:inline-block;
-            width: 300px;
-            height: 300px;
-            border-radius: 50%;
-            transition: 0.3s;
-            // background: conic-gradient(red 0% 80%, #ffffff 80% 100%);
-
-            position: absolute;
-            top: 0;
-            left: 0;z-index: 1000;
-          }
-
-          span.center{
-            background: #fff;
-            display : block;
-            position: absolute;
-            top:50%; left:50%;
-            width:200px; height:200px;
-            border-radius: 50%;
-            text-align:center; line-height: 200px;
-            font-size:30px;
-             transform: translate(-50%, -50%);
-          }
-          
         display: block;
         overflow: hidden;
         position: relative;
@@ -65,6 +39,10 @@
                 transition: all 0.6s ease-in;
 
                 .fb__list__summary {
+                    display: block;
+                }
+
+                .fb__list__pie {
                     display: block;
                 }
 
@@ -109,6 +87,47 @@
 
                     transition: all 0.25s ease-in-out;
 
+            }
+        }
+
+        &__pie {
+            display: none;
+            position: absolute;
+            bottom: 0;
+            right: 0;
+            z-index: 1;
+            width: rem(56px);
+            height: rem(56px);
+            border-radius: 50%;
+            transition: 0.3s;
+            transform: translate(20%, 20%);
+        }
+
+        &__score {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            position: absolute;
+            top: 50%; 
+            left: 50%;
+            width: rem(42px);
+            height: rem(42px);
+            border-radius: 50%;
+            background: #fff;
+            text-align: center; 
+            transform: translate(-50%, -50%);
+
+            em {
+                display: inline-block;
+                @include fontcss($black, bold, rem(18px), 1);
+                vertical-align: middle;
+            }
+
+            &:after {
+                content: "%";
+                display: inline-block;
+                vertical-align: sub;
+                @include fontcss($black, 600, rem(10px), 1);
             }
         }
 
