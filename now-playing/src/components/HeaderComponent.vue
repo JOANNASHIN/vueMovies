@@ -1,10 +1,16 @@
 <template>
     <header class="fb__header">
+        
+        <h1 class="fb__logo" v-show="deviceType == 'PC'">
+            <figure class="fb__logo__img">
+                <img src="/favicon.png" alt="">
+            </figure>
+        </h1>
+
         <form action="" class="fb__search" @submit.prevent="searchInit($event)">
             <fieldset class="fb__search__wrapper">
                 <legend>검색하기</legend>
-                <!--  @keyup.stop="searchInit($event)" -->
-                <input type="search" class="fb__search__input" placeholder="Search" v-model.trim="searchWord">
+                <input type="search" class="fb__search__input" placeholder="Search" v-model.trim="searchWord" @keyup.stop="searchInit($event)">
             </fieldset>
         </form>
 
