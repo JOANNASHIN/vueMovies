@@ -1,4 +1,4 @@
-# Vue.js2 X nowPlaying
+# Vue.js3 X nowPlaying
 **[Team or Personal]**  
 Personal
 
